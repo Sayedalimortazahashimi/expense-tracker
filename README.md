@@ -76,3 +76,9 @@ Through this project, I practiced:
 -Improve monetary precision throughout the application
 -Add more automated tests for user interactions and edge cases
 -Improve the command-line interface and error messages
+
+## Screenshot
+
+Here is a preview of the application running in the terminal:
+
+Expense Tracker application screenshot screenshots/screenshot.png
