@@ -1,14 +1,15 @@
 import unittest
 import sqlite3
+from database import DatabaseManager
+from models import Expense
 from expense_tracker import (
     calculate_total,
     is_valid_price,
     is_valid_quantity,
     is_valid_category,
     is_valid_date,
-    insert_expense
+    categories
 )
-
 
 class TestExpenseTracker(unittest.TestCase):
     def test_integer_total(self):
@@ -65,27 +66,29 @@ class TestExpenseTracker(unittest.TestCase):
         self.assertIsNotNone(result.fetchone())
 
     def test_insert_and_read_expense(self):
-        insert_expense(
-            self.connection,
-            "Coffee",
-            "Food",
-            2.5,
-            2,
-            "2026-10-09"
+        database = DatabaseManager(":memory:")
+        database.create_table()
+
+        expense = Expense(
+            description="Coffee",
+            category="Food",
+            price=2.5,
+            quantity=2,
+            date="2026-10-09"
         )
-        result = self.connection.execute("""
-            SELECT description, category, price, quantity, date
-            FROM expenses
-        """)
 
-        row = result.fetchone()
+        expense.id = database.add_expense(expense)
 
-        self.assertEqual(row[0], "Coffee")
-        self.assertEqual(row[1], "Food")
-        self.assertAlmostEqual(row[2], 2.50)
-        self.assertEqual(row[3], 2)
-        self.assertEqual(row[4], "2026-10-09")
+        expenses = database.get_all_expenses()
 
+        self.assertEqual(len(expenses), 1)
+        self.assertEqual(expenses[0].description, "Coffee")
+        self.assertEqual(expenses[0].category, "Food")
+        self.assertAlmostEqual(expenses[0].price, 2.50)
+        self.assertEqual(expenses[0].quantity, 2)
+        self.assertEqual(expenses[0].date, "2026-10-09")
+
+        database.close()
     
     def test_update_expense(self):
   
@@ -175,5 +178,11 @@ class TestExpenseTracker(unittest.TestCase):
         """)
 
         self.assertEqual(result.fetchone()[0], 1)
+
+    def test_category_display_name(self):
+        self.assertEqual(categories["food"], "Food")
+        self.assertEqual(categories["education"], "Education")
+        self.assertEqual(categories["electronics"], "Electronics")
+
 if __name__ == "__main__":
     unittest.main()
