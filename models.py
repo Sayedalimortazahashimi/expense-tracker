@@ -1,3 +1,4 @@
+from decimal import Decimal
 class Expense:
     def __init__(
         self, description, category, price, quantity, date, expense_id=None
@@ -10,4 +11,5 @@ class Expense:
         self.date = date
 
     def calculate_total(self):
-        return self.price * self.quantity
+        price = Decimal(str(self.price))
+        return price * self.quantity
