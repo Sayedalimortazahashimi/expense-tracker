@@ -80,5 +80,3 @@ Through this project, I practiced:
 ## Screenshot
 
 Here is a preview of the application running in the terminal:
-
-Expense Tracker application screenshot screenshots/screenshot.png
